@@ -1,12 +1,5 @@
 package vertigo
 
-import (
-	"context"
-	"fmt"
-	"io"
-	"os"
-)
-
 // Copyright (c) 2019 Micro Focus or one of its affiliates.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,81 +37,87 @@ const (
 	stdInDefaultCopyBlockSize = 65536
 )
 
-type VerticaContext interface {
-	context.Context
+const (
+	STDIN_STREAM_KEY               = "vertica.stdin.stream"
+	STDIN_COPY_BLOCK_SIZE_KEY      = "vertica.stdin.copy.block.size"
+	IN_MEMORY_RESULT_ROW_LIMIT_KEY = "vertica.in.memory.result.row.limit"
+)
 
-	SetCopyInputStream(inputStream io.Reader) error
-	GetCopyInputStream() io.Reader
+// type VerticaContext interface {
+// 	context.Context
 
-	SetCopyBlockSizeBytes(blockSize int) error
-	GetCopyBlockSizeBytes() int
+// 	SetCopyInputStream(inputStream io.Reader) error
+// 	GetCopyInputStream() io.Reader
 
-	SetInMemoryResultRowLimit(rowLimit int) error
-	GetInMemoryResultRowLimit() int
-}
+// 	SetCopyBlockSizeBytes(blockSize int) error
+// 	GetCopyBlockSizeBytes() int
 
-type verticaContext struct {
-	context.Context
+// 	SetInMemoryResultRowLimit(rowLimit int) error
+// 	GetInMemoryResultRowLimit() int
+// }
 
-	inputStream io.Reader
-	blockSize   int
-	rowLimit    int
-}
+// type verticaContext struct {
+// 	context.Context
 
-// NewVerticaContext creates a new context that inherits the values and behavior of the provided parent context.
-func NewVerticaContext(parentCtx context.Context) VerticaContext {
-	return &verticaContext{
-		Context:     parentCtx,
-		inputStream: os.Stdin,
-		blockSize:   stdInDefaultCopyBlockSize,
-		rowLimit:    0,
-	}
-}
+// 	inputStream io.Reader
+// 	blockSize   int
+// 	rowLimit    int
+// }
 
-// SetCopyInputStream sets the input stream to be used when copying from stdin. If not set, copying from stdin will
-// read from os.stdin.
-func (c *verticaContext) SetCopyInputStream(inputStream io.Reader) error {
-	if inputStream == nil {
-		return fmt.Errorf("cannot SetInputStream to a nil value")
-	}
+// // NewVerticaContext creates a new context that inherits the values and behavior of the provided parent context.
+// func NewVerticaContext(parentCtx context.Context) VerticaContext {
+// 	return &verticaContext{
+// 		Context:     parentCtx,
+// 		inputStream: os.Stdin,
+// 		blockSize:   stdInDefaultCopyBlockSize,
+// 		rowLimit:    0,
+// 	}
+// }
 
-	c.inputStream = inputStream
+// // SetCopyInputStream sets the input stream to be used when copying from stdin. If not set, copying from stdin will
+// // read from os.stdin.
+// func (c *verticaContext) SetCopyInputStream(inputStream io.Reader) error {
+// 	if inputStream == nil {
+// 		return fmt.Errorf("cannot SetInputStream to a nil value")
+// 	}
 
-	return nil
-}
+// 	c.inputStream = inputStream
 
-// GetCopyInputStream returns the currently active input stream to be used when copying from stdin.
-func (c *verticaContext) GetCopyInputStream() io.Reader {
-	return c.inputStream
-}
+// 	return nil
+// }
 
-// SetCopyBlockSizeBytes sets the size of the buffer used to transfer from the input stream to Vertica. By
-// default, it's 65536 (64k). It must be at least 16384 (16k) bytes.
-func (c *verticaContext) SetCopyBlockSizeBytes(blockSize int) error {
-	if blockSize < minCopyBlockSize {
-		return fmt.Errorf("cannot set copy block size to less than %d", minCopyBlockSize)
-	}
+// // GetCopyInputStream returns the currently active input stream to be used when copying from stdin.
+// func (c *verticaContext) GetCopyInputStream() io.Reader {
+// 	return c.inputStream
+// }
 
-	c.blockSize = blockSize
+// // SetCopyBlockSizeBytes sets the size of the buffer used to transfer from the input stream to Vertica. By
+// // default, it's 65536 (64k). It must be at least 16384 (16k) bytes.
+// func (c *verticaContext) SetCopyBlockSizeBytes(blockSize int) error {
+// 	if blockSize < minCopyBlockSize {
+// 		return fmt.Errorf("cannot set copy block size to less than %d", minCopyBlockSize)
+// 	}
 
-	return nil
-}
+// 	c.blockSize = blockSize
 
-// GetCopyBlockSizeBytes gets the size of the buffer used to transfer from the input stream to Vertica.
-func (c *verticaContext) GetCopyBlockSizeBytes() int {
-	return c.blockSize
-}
+// 	return nil
+// }
 
-func (c *verticaContext) SetInMemoryResultRowLimit(rowLimit int) error {
-	if rowLimit < 0 {
-		return fmt.Errorf("cannot set result limit to a negative number")
-	}
+// // GetCopyBlockSizeBytes gets the size of the buffer used to transfer from the input stream to Vertica.
+// func (c *verticaContext) GetCopyBlockSizeBytes() int {
+// 	return c.blockSize
+// }
 
-	c.rowLimit = rowLimit
+// func (c *verticaContext) SetInMemoryResultRowLimit(rowLimit int) error {
+// 	if rowLimit < 0 {
+// 		return fmt.Errorf("cannot set result limit to a negative number")
+// 	}
 
-	return nil
-}
+// 	c.rowLimit = rowLimit
 
-func (c *verticaContext) GetInMemoryResultRowLimit() int {
-	return c.rowLimit
-}
+// 	return nil
+// }
+
+// func (c *verticaContext) GetInMemoryResultRowLimit() int {
+// 	return c.rowLimit
+// }

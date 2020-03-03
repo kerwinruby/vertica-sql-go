@@ -153,10 +153,11 @@ func newRows(ctx context.Context, columnsDefsMsg *msgs.BERowDescMsg, tzOffset st
 	var resultData rowStore
 	var err error
 
-	if vCtx, ok := ctx.(VerticaContext); ok {
-		rowBufferSize = vCtx.GetInMemoryResultRowLimit()
+	if v, ok := ctx.Value(IN_MEMORY_RESULT_ROW_LIMIT_KEY).(int); ok {
+		rowBufferSize = v
 		inMemRowLimit = rowBufferSize
 	}
+
 	if inMemRowLimit != 0 {
 		resultData, err = rowcache.NewFileCache(inMemRowLimit)
 		if err != nil {

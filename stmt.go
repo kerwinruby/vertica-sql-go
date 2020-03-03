@@ -301,12 +301,17 @@ func (s *stmt) copySTDIN(ctx context.Context) {
 
 	var streamToUse io.Reader
 	streamToUse = os.Stdin
-
 	var copyBlockSize = stdInDefaultCopyBlockSize
 
-	if vCtx, ok := ctx.(VerticaContext); ok {
-		streamToUse = vCtx.GetCopyInputStream()
-		copyBlockSize = vCtx.GetCopyBlockSizeBytes()
+	if stream, ok := ctx.Value(STDIN_STREAM_KEY).(io.Reader); ok {
+		streamToUse = stream
+	}
+	if v, ok := ctx.Value(STDIN_COPY_BLOCK_SIZE_KEY).(int); ok {
+		copyBlockSize = v
+	}
+
+	if streamToUse == nil {
+		return
 	}
 
 	block := make([]byte, copyBlockSize)
