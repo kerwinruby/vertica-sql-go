@@ -8,13 +8,7 @@ vertica-sql-go is a native Go adapter for the Vertica (http://www.vertica.com) d
 
 Please check out [release notes](https://github.com/vertica/vertica-sql-go/releases) to learn about the latest improvements.
 
-vertica-sql-go is currently in alpha stage; it has been tested for functionality and has a very basic test suite. Please use with caution, and feel free to submit issues and/or pull requests (Read up on our [contributing guidelines](#contributing-guidelines)).
-
 vertica-sql-go has been tested with Vertica 9.2.0+ and Go 1.11.2.
-
-## Release Notes
-
-* As this driver is still in alpha stage, we reserve the right to break APIs and change functionality until it has been stablilized.
 
 ## Installation
 
@@ -101,6 +95,8 @@ Currently supported query arguments are:
 |----------------|-------------|--------|
 | use_prepared_statements    | whether to use client-side query interpolation or server-side argument binding | 1 = (default) use server-side bindings |
 |                |             | 0 = user client side interpolation **(LESS SECURE)** |
+| connection_load_balance    | whether to enable connection load balancing on the client side | 0 = (default) disable load balancing |
+|                |             | 1 = enable load balancing |
 | tlsmode            | the ssl/tls policy for this connection | 'none' (default) = don't use SSL/TLS for this connection |
 |                |                                    | 'server' = server must support SSL/TLS, but skip verification **(INSECURE!)** |
 |                |                                    | 'server-strict' = server must support SSL/TLS |
