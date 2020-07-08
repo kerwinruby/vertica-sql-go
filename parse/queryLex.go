@@ -174,9 +174,10 @@ func lexQuery(l *Lexer) stateFunc {
 			return lexString
 		}
 
-		if r == '@' {
-			return lexNamedParam
-		}
+		//  luopeihuai  2020-07-08
+		// if r == '@' {
+		// 	return lexNamedParam
+		// }
 
 		if r == '?' {
 			return lexPositional
